@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+<definitions name="BarangService"
+             targetNamespace="http://example.com/barang_service"
+             xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:tns="http://example.com/barang_service"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+    <message name="createBarangRequest">
+        <part name="nama_barang" type="xsd:string"/>
+        <part name="jumlah" type="xsd:int"/>
+    </message>
+    <message name="createBarangResponse">
+        <part name="result" type="xsd:string"/>
+    </message>
+
+    <message name="getBarangRequest">
+        <part name="id" type="xsd:int"/>
+    </message>
+    <message name="getBarangResponse">
+        <part name="result" type="xsd:string"/>
+    </message>
+
+    <message name="updateBarangRequest">
+        <part name="id" type="xsd:int"/>
+        <part name="nama_barang" type="xsd:string"/>
+        <part name="jumlah" type="xsd:int"/>
+    </message>
+    <message name="updateBarangResponse">
+        <part name="result" type="xsd:string"/>
+    </message>
+
+    <message name="deleteBarangRequest">
+        <part name="id" type="xsd:int"/>
+    </message>
+    <message name="deleteBarangResponse">
+        <part name="result" type="xsd:string"/>
+    </message>
+
+    <portType name="BarangPortType">
+        <operation name="createBarang">
+            <input message="tns:createBarangRequest"/>
+            <output message="tns:createBarangResponse"/>
+        </operation>
+        <operation name="getBarang">
+            <input message="tns:getBarangRequest"/>
+            <output message="tns:getBarangResponse"/>
+        </operation>
+        <operation name="updateBarang">
+            <input message="tns:updateBarangRequest"/>
+            <output message="tns:updateBarangResponse"/>
+        </operation>
+        <operation name="deleteBarang">
+            <input message="tns:deleteBarangRequest"/>
+            <output message="tns:deleteBarangResponse"/>
+        </operation>
+    </portType>
+
+    <binding name="BarangBinding" type="tns:BarangPortType">
+        <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="createBarang">
+            <soap:operation soapAction="urn:createBarang"/>
+            <input>
+                <soap:body use="encoded" namespace="urn:createBarang"/>
+            </input>
+            <output>
+                <soap:body use="encoded" namespace="urn:createBarang"/>
+            </output>
+        </operation>
+        <operation name="getBarang">
+            <soap:operation soapAction="urn:getBarang"/>
+            <input>
+                <soap:body use="encoded" namespace="urn:getBarang"/>
+            </input>
+            <output>
+                <soap:body use="encoded" namespace="urn:getBarang"/>
+            </output>
+        </operation>
+        <operation name="updateBarang">
+            <soap:operation soapAction="urn:updateBarang"/>
+            <input>
+                <soap:body use="encoded" namespace="urn:updateBarang"/>
+            </input>
+            <output>
+                <soap:body use="encoded" namespace="urn:updateBarang"/>
+            </output>
+        </operation>
+        <operation name="deleteBarang">
+            <soap:operation soapAction="urn:deleteBarang"/>
+            <input>
+                <soap:body use="encoded" namespace="urn:deleteBarang"/>
+            </input>
+            <output>
+                <soap:body use="encoded" namespace="urn:deleteBarang"/>
+            </output>
+        </operation>
+    </binding>
+
+    <service name="BarangService">
+        <port name="BarangPort" binding="tns:BarangBinding">
+            <soap:address location="http://example.com/barang_service.php"/>
+        </port>
+    </service>
+</definitions>
