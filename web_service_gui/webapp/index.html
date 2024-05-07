@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Aplikasi Kependudukan - Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/style.css" rel="stylesheet">
+
+    <!-- Manggil library javascript eksternal untuk layout auto keren, Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
+
+    <!-- Manggil library javascript eksternal untuk bikin chart -->
+    <script src='https://cdn.plot.ly/plotly-2.12.1.min.js'></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
+
+    <!-- Manggil library javascript eksternal untuk http client -->
+	  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  </head>
+  <body>
+    <nav id="menus" class="navbar navbar-expand-lg navbar-dark bg-primary mb-5">
+      <div class="container-fluid">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" href="#">B.I.</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/webapp/penduduk-list.html">Operasional</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <div class="container" id="content">
+      <div class="row mb-4">
+        <div class="col-sm-12">
+          <h1>Business Intelligence</h1>
+        </div>
+      </div>
+      <div class="row row-cols-1 row-cols-md-2 g-2 g-md-3">
+        <div class="col">
+          <div class="shadow-sm p-3">
+            <h3>Jumlah Penduduk Per Kabupaten</h3>
+            <div height="200" id="chart-penduduk-per-kabupaten"></div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="shadow-sm p-3">
+            <h3>Jumlah Penduduk Per Usia</h3>
+            <div style="height: 1000px;" id="chart-penduduk-per-usia"></div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="shadow-sm p-3">
+            <h3>Sebaran Penduduk Per Bulan Tahun Lahir</h3>
+            <div style="height: 400px;" id="chart-penduduk-per-bulan-tahun-lahir"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <script>
+
+      function tampilkanChartPendudukPerKabupaten () {
+
+        const alamatWebService = 'http://localhost/web_service_gui/api/index.php/bi/penduduk/distribusi-kabupaten';
+        
+        axios.get(alamatWebService).then(function(responHTTPDariWebService) {
+
+          const dataDariWebService = responHTTPDariWebService.data["data"];
+          console.log(dataDariWebService);
+
+          const listNamaKabupaten = dataDariWebService.map(function(dataPerBaris) {
+            return dataPerBaris.kabupaten;
+          })
+
+          console.log(listNamaKabupaten);
+
+          const listJumlahPendudukPerKabupaten = dataDariWebService.map(function(dataPerBaris) {
+            return parseInt(dataPerBaris.jumlah_penduduk);
+          })
+
+          console.log(listJumlahPendudukPerKabupaten);
+
+          const dataUntukPlotly = [
+            {
+              y: listNamaKabupaten,
+              x: listJumlahPendudukPerKabupaten,
+              type: 'bar',
+              orientation: 'h',
+            }
+          ];
+
+          const konfigurasiPlotly = {
+            yaxis: {
+              automargin: true,
+            },
+          }
+
+          Plotly.newPlot(
+            'chart-penduduk-per-kabupaten',
+            dataUntukPlotly,
+            konfigurasiPlotly,
+          );
+
+        });
+      }
+
+      function tampilkanChartPendudukPerUsia () {
+
+        const alamatWebService = 'http://localhost/web_service_gui/api/index.php/bi/penduduk/distribusi-usia';
+        
+        axios.get(alamatWebService).then(function(responHTTPDariWebService) {
+
+          const dataDariWebService = responHTTPDariWebService.data["data"];
+          console.log(dataDariWebService);
+
+          const listUsia = dataDariWebService.map(function(dataPerBaris) {
+            return dataPerBaris.usia;
+          })
+
+          console.log(listUsia);
+
+          const listJumlahPendudukPerUsia = dataDariWebService.map(function(dataPerBaris) {
+            return parseInt(dataPerBaris.jumlah_penduduk);
+          })
+
+          console.log(listJumlahPendudukPerUsia);
+
+          const dataUntukPlotly = [
+            {
+              y: listUsia,
+              x: listJumlahPendudukPerUsia,
+              type: 'bar',
+              orientation: 'h',
+            }
+          ];
+
+          const konfigurasiPlotly = {
+            yaxis: {
+              automargin: true,
+              dtick: 1,
+            },
+          }
+
+          Plotly.newPlot(
+            'chart-penduduk-per-usia',
+            dataUntukPlotly,
+            konfigurasiPlotly,
+          );
+
+        });
+      }
+
+      function tampilkanChartPendudukPerBulanTahunLahir () {
+
+        const alamatWebService = 'http://localhost/web_service_gui/api/index.php/bi/penduduk/distribusi-bulan-tahun-lahir';
+        
+        axios.get(alamatWebService).then(function(responHTTPDariWebService) {
+
+          const dataDariWebService = responHTTPDariWebService.data["data"];
+          console.log(dataDariWebService);
+
+          const listTahun = dataDariWebService.map(function(dataPerBaris) {
+            return parseInt(dataPerBaris.tahun);
+          })
+
+          console.log(listTahun);
+
+          const listBulan = dataDariWebService.map(function(dataPerBaris) {
+            return parseInt(dataPerBaris.bulan);
+          })
+
+          console.log(listBulan);
+
+          const listJumlahPendudukPerBulanTahun = dataDariWebService.map(function(dataPerBaris) {
+            return parseInt(dataPerBaris.jumlah_penduduk);
+          })
+
+          console.log(listJumlahPendudukPerBulanTahun);
+
+          // https://stackoverflow.com/questions/67635512/plotly-colorscale-in-scatter-data-plot
+
+          const dataUntukPlotly = [
+            {
+              y: listBulan,
+              x: listTahun,
+              // type: 'scatter',
+              mode: 'markers',
+              marker: {
+                size: 6,
+                color: listJumlahPendudukPerBulanTahun, 
+                colorscale: 'Greens',
+              }
+            }
+          ];
+
+          const konfigurasiPlotly = {
+          }
+
+          Plotly.newPlot(
+            'chart-penduduk-per-bulan-tahun-lahir',
+            dataUntukPlotly,
+            konfigurasiPlotly,
+          );
+
+        });
+      }
+
+      tampilkanChartPendudukPerKabupaten();
+      tampilkanChartPendudukPerUsia();
+      tampilkanChartPendudukPerBulanTahunLahir();
+
+    </script>
+  </body>
+</html>
